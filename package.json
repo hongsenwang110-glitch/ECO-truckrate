@@ -9,12 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@here/flexpolyline": "^0.1.0",
+    "@neondatabase/serverless": "^1.1.0",
+    "maplibre-gl": "^5.24.0",
     "next": "16.2.11",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zipcodes": "^8.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/maplibre-gl": "^1.13.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

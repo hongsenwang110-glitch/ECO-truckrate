@@ -1,0 +1,73 @@
+import atriData from "@/data/atri-costs-2024.json";
+
+export const ATRI = atriData;
+
+export const AVG_TRUCK_SPEED_MPH = 55;
+
+export const STATE_TO_REGION: Record<string, keyof typeof ATRI.regionTotalsPerMile> = {
+  IL: "midwest",
+  IN: "midwest",
+  IA: "midwest",
+  KS: "midwest",
+  MI: "midwest",
+  MN: "midwest",
+  MO: "midwest",
+  NE: "midwest",
+  ND: "midwest",
+  OH: "midwest",
+  SD: "midwest",
+  WI: "midwest",
+  CT: "northeast",
+  DE: "northeast",
+  DC: "northeast",
+  ME: "northeast",
+  MD: "northeast",
+  MA: "northeast",
+  NH: "northeast",
+  NJ: "northeast",
+  NY: "northeast",
+  PA: "northeast",
+  RI: "northeast",
+  VT: "northeast",
+  AL: "southeast",
+  FL: "southeast",
+  GA: "southeast",
+  KY: "southeast",
+  MS: "southeast",
+  NC: "southeast",
+  SC: "southeast",
+  TN: "southeast",
+  VA: "southeast",
+  WV: "southeast",
+  AR: "south_central",
+  LA: "south_central",
+  OK: "south_central",
+  TX: "south_central",
+  AK: "west",
+  AZ: "west",
+  CA: "west",
+  CO: "west",
+  HI: "west",
+  ID: "west",
+  MT: "west",
+  NV: "west",
+  NM: "west",
+  OR: "west",
+  UT: "west",
+  WA: "west",
+  WY: "west",
+};
+
+export const LINE_ITEM_LABELS: Record<string, string> = {
+  fuel: "Fuel",
+  truck_trailer_payments: "Truck / Trailer Payments",
+  repair_maintenance: "Repair & Maintenance",
+  insurance: "Insurance",
+  permits_licenses: "Permits & Licenses",
+  tires: "Tires",
+  tolls: "Tolls",
+  driver_wages: "Driver Wages",
+  driver_benefits: "Driver Benefits",
+};
+
+export const HISTORY_STORAGE_KEY = "eco-truckrate-history-v1";
