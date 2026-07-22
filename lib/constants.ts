@@ -1,4 +1,4 @@
-import atriData from "@/data/atri-costs-2024.json";
+import atriData from "@/data/atri-costs-2025.json";
 
 export const ATRI = atriData;
 

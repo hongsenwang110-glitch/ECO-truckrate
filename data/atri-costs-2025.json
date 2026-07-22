@@ -1,0 +1,29 @@
+{
+  "version": "2025",
+  "source": "ATRI Operational Costs of Trucking — Table 8 (2025)",
+  "costsPerMile": {
+    "fuel": 0.482,
+    "truck_trailer_payments": 0.404,
+    "repair_maintenance": 0.215,
+    "insurance": 0.106,
+    "permits_licenses": 0.008,
+    "tires": 0.050,
+    "tolls": 0.043,
+    "driver_wages": 0.818,
+    "driver_benefits": 0.210
+  },
+  "totalPerMile": 2.336,
+  "tlTotalPerMile": 2.202,
+  "tlExclFuelPerMile": 1.716,
+  "driverTotalPerMile": 1.028,
+  "baselineDieselGal": 3.83,
+  "regionTotalsPerMile": {
+    "midwest": 2.281,
+    "northeast": 2.544,
+    "southeast": 2.270,
+    "south_central": 2.178,
+    "west": 2.183
+  },
+  "nationalAvgPerMile": 2.336,
+  "regionNote": "Regional totals scaled from 2024 regional data at national ratio (2.336/2.260) until 2025 regional Table 13 is available"
+}
