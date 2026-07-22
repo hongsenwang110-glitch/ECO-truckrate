@@ -2,6 +2,7 @@
 
 import { rateColor } from "@/lib/atri-model";
 import { fmtMoney, fmtPerMile } from "@/lib/format";
+import { estimateMarketRange } from "@/lib/market-estimate";
 import type { WarpQuoteResult } from "@/lib/types";
 
 interface WarpQuoteProps {
@@ -9,9 +10,16 @@ interface WarpQuoteProps {
   loading: boolean;
   distanceMiles: number;
   atriTotal?: number;
+  atriPerMile?: number;
 }
 
-export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuoteProps) {
+export function WarpQuote({
+  warp,
+  loading,
+  distanceMiles,
+  atriTotal,
+  atriPerMile,
+}: WarpQuoteProps) {
   const perMile =
     warp && warp.price > 0
       ? warp.perMile > 0
@@ -19,8 +27,10 @@ export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuote
         : warp.price / distanceMiles
       : 0;
 
-  const marketLow = atriTotal != null ? atriTotal * 1.35 : null;
-  const marketHigh = atriTotal != null ? atriTotal * 1.55 : null;
+  const market =
+    atriTotal != null && atriPerMile != null
+      ? estimateMarketRange(atriTotal, atriPerMile, distanceMiles)
+      : null;
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -59,19 +69,20 @@ export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuote
             </div>
           )}
 
-          {marketLow != null && marketHigh != null && (
+          {market && (
             <div className="relative rounded-lg border-2 border-blue-300 bg-blue-50 p-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className="inline-block h-3 w-3 rounded-full bg-blue-500" />
                   <span className="text-sm font-medium text-blue-800">⭐ 市场参考区间</span>
                 </div>
                 <span className="text-sm font-bold tabular-nums text-blue-900">
-                  {fmtMoney(marketLow)} – {fmtMoney(marketHigh)}
+                  {fmtMoney(market.lowTotal)} – {fmtMoney(market.highTotal)}
                 </span>
               </div>
               <p className="mt-1 pl-5 text-xs text-blue-600">
-                ATRI ×1.35~1.55 · 对标 DAT carrier posted rates
+                {market.tier.label} · ATRI ×{market.tier.low}~{market.tier.high} · 推荐{" "}
+                {fmtMoney(market.midTotal)} (×{market.tier.mid})
               </p>
             </div>
           )}
@@ -88,7 +99,7 @@ export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuote
                 </span>
               </div>
               <p className="mt-1 pl-5 text-xs text-amber-600">
-                Solo · all-in 全包价（含 broker markup ~20-30%）· {warp.transitDays} 天时效
+                Solo · all-in 全包价 · {warp.transitDays} 天时效 · 可用 ×0.8 粗估 carrier 价
               </p>
             </div>
           )}
@@ -101,10 +112,9 @@ export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuote
 
       <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2">
         <p className="text-xs text-slate-500">
-          <strong>定价逻辑：</strong>ATRI = 行业运营成本均值（成本底）→ 
-          市场估价 = carrier 实际挂牌（+35%~55% markup）→ 
-          Warp = broker 全包报价（+20-30% on top）。
-          建议报价参考蓝色「市场区间」，Warp 做上限参考。
+          <strong>定价逻辑：</strong>市场系数按里程分段（长途 markup 更低）。
+          &lt;1,500mi ×1.38~1.55 · 1,500–2,200mi ×1.33~1.48 · &gt;2,200mi ×1.28~1.42。
+          建议报价用蓝色「推荐」中位值，Warp 做上限参考。
         </p>
       </div>
     </section>

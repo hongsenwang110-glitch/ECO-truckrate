@@ -12,6 +12,7 @@ import { QueryHistory } from "@/components/QueryHistory";
 import { calculateAtriCost } from "@/lib/atri-model";
 import { calculateTransit } from "@/lib/transit-calculator";
 import { HISTORY_STORAGE_KEY } from "@/lib/constants";
+import { estimateMarketRange } from "@/lib/market-estimate";
 import { fmtMoney, fmtPerMile } from "@/lib/format";
 import type {
   CalculateResult,
@@ -180,6 +181,11 @@ export default function TruckRateCalculator() {
         : warpPrice / result.route.distanceMiles
       : null;
 
+  const market =
+    result && activeTotal != null && activePerMile != null
+      ? estimateMarketRange(activeTotal, activePerMile, result.route.distanceMiles)
+      : null;
+
   return (
     <div className="min-h-full bg-slate-100">
       <header className="border-b border-slate-800 bg-slate-900 text-white">
@@ -294,15 +300,20 @@ export default function TruckRateCalculator() {
                   <p className="text-xs font-semibold uppercase tracking-wide text-blue-800">
                     ⭐ 市场估价区间
                   </p>
-                  {activeTotal != null && (
+                  {market && (
                     <>
                       <p className="mt-2 text-2xl font-bold tabular-nums text-blue-900">
-                        {fmtMoney(activeTotal * 1.35)} – {fmtMoney(activeTotal * 1.55)}
+                        {fmtMoney(market.lowTotal)} – {fmtMoney(market.highTotal)}
                       </p>
                       <p className="text-sm tabular-nums text-blue-700">
-                        {fmtPerMile((activePerMile ?? 0) * 1.35)} – {fmtPerMile((activePerMile ?? 0) * 1.55)}
+                        {fmtPerMile(market.lowPerMile)} – {fmtPerMile(market.highPerMile)}
                       </p>
-                      <p className="mt-1 text-xs text-blue-600">ATRI ×1.35~1.55 (carrier 挂牌价)</p>
+                      <p className="mt-1 text-xs font-medium text-blue-800">
+                        推荐参考：{fmtMoney(market.midTotal)} (×{market.tier.mid})
+                      </p>
+                      <p className="mt-0.5 text-xs text-blue-600">
+                        {market.tier.label} · ATRI ×{market.tier.low}~{market.tier.high}
+                      </p>
                     </>
                   )}
                 </div>
@@ -337,6 +348,7 @@ export default function TruckRateCalculator() {
               loading={warpLoading}
               distanceMiles={result.route.distanceMiles}
               atriTotal={activeTotal ?? undefined}
+              atriPerMile={activePerMile ?? undefined}
             />
 
             <div className="grid gap-4 lg:grid-cols-2">
