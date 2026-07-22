@@ -37,6 +37,10 @@ export interface TransitEstimate {
   drivingHours: number;
   transitDays: number;
   totalElapsedHours: number;
+  resetHoursTotal?: number;
+  resetBlocks?: number;
+  driveHoursPerDay?: number;
+  resetHoursPerBlock?: number;
 }
 
 export interface WarpQuoteResult {

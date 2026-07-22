@@ -274,48 +274,58 @@ export default function TruckRateCalculator() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border-2 border-emerald-400 bg-emerald-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                    Warp 市场报价（参考采购价）
-                  </p>
-                  {warpLoading ? (
-                    <div className="mt-2 h-10 w-40 animate-pulse rounded bg-emerald-200" />
-                  ) : warpPrice ? (
-                    <>
-                      <p className="mt-2 text-4xl font-bold tabular-nums text-emerald-900">
-                        {fmtMoney(warpPrice, 2)}
-                      </p>
-                      <p className="text-sm tabular-nums text-emerald-800">
-                        {warpPerMile ? fmtPerMile(warpPerMile) : ""} · all-in
-                        {result.warp?.transitDays ? ` · ${result.warp.transitDays} 天` : ""}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="mt-2 text-sm text-amber-700">
-                      {result.warp?.error ? `Warp: ${result.warp.error}` : "Warp 报价加载中或不可用"}
-                    </p>
-                  )}
-                </div>
-
+              <div className="grid gap-4 md:grid-cols-3">
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    ATRI 行业成本（成本底）
+                    ATRI 成本底
                   </p>
                   {activeTotal != null && activePerMile != null && (
                     <>
-                      <p className="mt-2 text-3xl font-bold tabular-nums text-slate-700">
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-slate-700">
                         {fmtMoney(activeTotal)}
                       </p>
                       <p className="text-sm tabular-nums text-slate-500">{fmtPerMile(activePerMile)}</p>
+                      <p className="mt-1 text-xs text-slate-400">行业运营成本均值</p>
                     </>
                   )}
-                  {warpPrice && activeTotal != null && (
-                    <p className="mt-2 text-sm text-slate-600">
-                      价差:{" "}
-                      <strong className="text-emerald-700">
-                        +{fmtMoney(warpPrice - activeTotal, 0)}
-                      </strong>
+                </div>
+
+                <div className="rounded-xl border-2 border-blue-400 bg-blue-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-blue-800">
+                    ⭐ 市场估价区间
+                  </p>
+                  {activeTotal != null && (
+                    <>
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-blue-900">
+                        {fmtMoney(activeTotal * 1.35)} – {fmtMoney(activeTotal * 1.55)}
+                      </p>
+                      <p className="text-sm tabular-nums text-blue-700">
+                        {fmtPerMile((activePerMile ?? 0) * 1.35)} – {fmtPerMile((activePerMile ?? 0) * 1.55)}
+                      </p>
+                      <p className="mt-1 text-xs text-blue-600">ATRI ×1.35~1.55 (carrier 挂牌价)</p>
+                    </>
+                  )}
+                </div>
+
+                <div className="rounded-xl border border-amber-300 bg-amber-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+                    Warp Broker 报价
+                  </p>
+                  {warpLoading ? (
+                    <div className="mt-2 h-8 w-32 animate-pulse rounded bg-amber-200" />
+                  ) : warpPrice ? (
+                    <>
+                      <p className="mt-2 text-2xl font-bold tabular-nums text-amber-900">
+                        {fmtMoney(warpPrice, 0)}
+                      </p>
+                      <p className="text-sm tabular-nums text-amber-700">
+                        {warpPerMile ? fmtPerMile(warpPerMile) : ""} · all-in
+                      </p>
+                      <p className="mt-1 text-xs text-amber-600">含 broker markup ~20-30%</p>
+                    </>
+                  ) : (
+                    <p className="mt-2 text-sm text-amber-700">
+                      {result.warp?.error ? `Warp: ${result.warp.error}` : "加载中…"}
                     </p>
                   )}
                 </div>

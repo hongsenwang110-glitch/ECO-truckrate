@@ -20,11 +20,17 @@ export function calculateTransit(
   const driveHoursPerDay = 11;
   const resetHours = 10;
   const drivingDays = Math.max(1, Math.ceil(windshieldHours / driveHoursPerDay));
-  const totalHours = windshieldHours + (drivingDays - 1) * resetHours;
+  const resetBlocks = Math.max(0, drivingDays - 1);
+  const resetHoursTotal = resetBlocks * resetHours;
+  const totalHours = windshieldHours + resetHoursTotal;
 
   return {
     drivingHours: windshieldHours,
     transitDays: drivingDays,
     totalElapsedHours: totalHours,
+    resetHoursTotal,
+    resetBlocks,
+    driveHoursPerDay,
+    resetHoursPerBlock: resetHours,
   };
 }

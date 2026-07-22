@@ -18,73 +18,95 @@ export function WarpQuote({ warp, loading, distanceMiles, atriTotal }: WarpQuote
         ? warp.perMile
         : warp.price / distanceMiles
       : 0;
-  const margin =
-    warp && warp.price > 0 && atriTotal != null ? warp.price - atriTotal : null;
+
+  const marketLow = atriTotal != null ? atriTotal * 1.35 : null;
+  const marketHigh = atriTotal != null ? atriTotal * 1.55 : null;
 
   return (
-    <section className="rounded-xl border-2 border-emerald-300 bg-emerald-50 p-5 shadow-sm">
+    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-emerald-800">
-            市场报价 · Warp FTL
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-700">
+            三方价格对比
           </h2>
-          <p className="text-xs text-emerald-700">真实可订全包价（含 FSC）· 报价参考首选</p>
+          <p className="text-xs text-slate-500">ATRI 成本底 → 市场区间 → Warp broker 上限</p>
         </div>
-        <span className="rounded-full bg-emerald-200 px-2 py-0.5 text-xs font-medium text-emerald-900">
-          {warp?.quoteTier ?? "Warp Network"}
-        </span>
       </div>
 
       {loading && (
         <div className="animate-pulse space-y-2">
-          <div className="h-10 w-48 rounded bg-emerald-200" />
-          <div className="h-4 w-64 rounded bg-emerald-100" />
+          <div className="h-6 w-full rounded bg-slate-200" />
+          <div className="h-4 w-64 rounded bg-slate-100" />
         </div>
       )}
 
-      {!loading && warp?.error && (
-        <p className="text-sm text-amber-800">Warp 报价失败: {warp.error}</p>
-      )}
-
-      {!loading && warp && !warp.error && warp.price > 0 && (
-        <>
-          <p className={`text-4xl font-bold tabular-nums ${rateColor(perMile)}`}>
-            {fmtMoney(warp.price, 2)}
-          </p>
-          <p className={`mt-1 text-base tabular-nums ${rateColor(perMile)}`}>
-            {fmtPerMile(perMile)} · all-in · {warp.transitDays} 天时效
-          </p>
-          {margin != null && (
-            <p
-              className={`mt-3 rounded-lg px-3 py-2 text-sm ${
-                margin >= 0 ? "bg-white text-emerald-900" : "bg-red-100 text-red-800"
-              }`}
-            >
-              vs ATRI 成本 {fmtMoney(atriTotal ?? 0)} →{" "}
-              <strong>{margin >= 0 ? "+" : ""}{fmtMoney(margin, 0)}</strong>{" "}
-              {margin >= 0 ? "价差空间" : "低于成本"}
-            </p>
+      {!loading && (
+        <div className="space-y-3">
+          {atriTotal != null && (
+            <div className="relative rounded-lg bg-slate-50 p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-3 w-3 rounded-full bg-slate-400" />
+                  <span className="text-sm font-medium text-slate-600">ATRI 成本底</span>
+                </div>
+                <span className="text-sm font-bold tabular-nums text-slate-600">
+                  {fmtMoney(atriTotal)}
+                </span>
+              </div>
+              <p className="mt-1 pl-5 text-xs text-slate-400">
+                Solo driver 行业平均运营成本
+              </p>
+            </div>
           )}
-          {warp.bookingUrl && (
-            <a
-              href={warp.bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-block text-sm font-medium text-emerald-800 underline underline-offset-2 hover:text-emerald-950"
-            >
-              在 Warp 查看/预订 →
-            </a>
+
+          {marketLow != null && marketHigh != null && (
+            <div className="relative rounded-lg border-2 border-blue-300 bg-blue-50 p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-3 w-3 rounded-full bg-blue-500" />
+                  <span className="text-sm font-medium text-blue-800">⭐ 市场参考区间</span>
+                </div>
+                <span className="text-sm font-bold tabular-nums text-blue-900">
+                  {fmtMoney(marketLow)} – {fmtMoney(marketHigh)}
+                </span>
+              </div>
+              <p className="mt-1 pl-5 text-xs text-blue-600">
+                ATRI ×1.35~1.55 · 对标 DAT carrier posted rates
+              </p>
+            </div>
           )}
-        </>
+
+          {warp && !warp.error && warp.price > 0 && (
+            <div className="relative rounded-lg bg-amber-50 p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-block h-3 w-3 rounded-full bg-amber-500" />
+                  <span className="text-sm font-medium text-amber-800">Warp Broker 报价</span>
+                </div>
+                <span className={`text-sm font-bold tabular-nums ${rateColor(perMile)}`}>
+                  {fmtMoney(warp.price)} ({fmtPerMile(perMile)})
+                </span>
+              </div>
+              <p className="mt-1 pl-5 text-xs text-amber-600">
+                Solo · all-in 全包价（含 broker markup ~20-30%）· {warp.transitDays} 天时效
+              </p>
+            </div>
+          )}
+
+          {warp?.error && (
+            <p className="text-sm text-amber-700">Warp: {warp.error}</p>
+          )}
+        </div>
       )}
 
-      {!loading && (!warp || warp.error || warp.price <= 0) && !warp?.error && (
-        <p className="text-sm text-emerald-800">该 lane 暂无 Warp 报价返回。</p>
-      )}
-
-      <p className="mt-3 text-xs text-emerald-700/80">
-        单一渠道参考价，非 DAT 全市场均价。ATRI 为行业成本底，Warp 更接近实际采购价。
-      </p>
+      <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2">
+        <p className="text-xs text-slate-500">
+          <strong>定价逻辑：</strong>ATRI = 行业运营成本均值（成本底）→ 
+          市场估价 = carrier 实际挂牌（+35%~55% markup）→ 
+          Warp = broker 全包报价（+20-30% on top）。
+          建议报价参考蓝色「市场区间」，Warp 做上限参考。
+        </p>
+      </div>
     </section>
   );
 }
