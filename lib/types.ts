@@ -54,6 +54,7 @@ export interface WarpQuoteResult {
   bookingUrl?: string;
   deliveryDate?: string;
   expiresAt?: string;
+  pickupDate?: string;
   error?: string;
 }
 

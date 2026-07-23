@@ -335,9 +335,18 @@ export default function TruckRateCalculator() {
                       <p className="mt-1 text-xs text-amber-600">含 broker markup ~20-30%</p>
                     </>
                   ) : (
-                    <p className="mt-2 text-sm text-amber-700">
-                      {result.warp?.error ? `Warp: ${result.warp.error}` : "加载中…"}
-                    </p>
+                    <div className="mt-2">
+                      <p className="text-sm font-medium text-amber-900">Warp 暂不可用</p>
+                      <p className="mt-1 text-xs text-amber-800">
+                        {result.warp?.error ??
+                          "Warp FTL 报价服务未返回价格，请先看蓝色市场区间"}
+                      </p>
+                      {market && (
+                        <p className="mt-2 text-xs text-amber-700">
+                          临时参考：broker 上限约 {fmtMoney(market.highTotal)}（市场区间上限）
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
